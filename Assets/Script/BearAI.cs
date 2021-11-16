@@ -9,6 +9,7 @@ public class BearAI : MonoBehaviour {
     private NavMeshAgent _agent;
     private SphereCollider _sphereCol;
     private Vector3 _target;
+    private NavMeshPath _path;
     
     public GameObject navigationArea;
     private Vector3 _navAreaExtents;
@@ -21,28 +22,49 @@ public class BearAI : MonoBehaviour {
         _agent = GetComponent<NavMeshAgent>();
         var radius = _agent.radius;
         _navAreaExtents = navigationArea.GetComponent<Renderer>().bounds.extents;
-        _target.x = Random.Range(-_navAreaExtents.x + radius, _navAreaExtents.x - radius);
-        _target.y = transform.position.y;
-        _target.z = Random.Range(-_navAreaExtents.z + radius, _navAreaExtents.z - radius);
-
+        
         gameObject.AddComponent<Rigidbody>();
         _sphereCol = gameObject.AddComponent<SphereCollider>();
         _sphereCol.radius = visibleRange;
         _sphereCol.isTrigger = true;
+
+        _path = NewRandomTarget();
+        while (_path == null) {
+            _path = NewRandomTarget();
+        }
     }
 
     void Update() {
         var dis = Vector3.Distance(transform.position, _target);
         if (dis < 0.3 && _canRandomPos) {
-            NewRandomTarget();
+            _path = NewRandomTarget();
+            while (_path == null) {
+                _path = NewRandomTarget();
+            }
         }
-        _agent.destination = _target;
+        _agent.SetPath(_path);
         //Debug.Log(_target.x + " " + _target.y + " " + _target.z);
     }
 
-    private void NewRandomTarget() {
+    private NavMeshPath NewRandomTarget() {
+        NavMeshPath path = new NavMeshPath();
         _target.x = Random.Range(-_navAreaExtents.x, _navAreaExtents.x);
+        _target.y = transform.position.y;
         _target.z = Random.Range(-_navAreaExtents.z, _navAreaExtents.z);
+        if (NavMesh.CalculatePath(transform.position, _target, NavMesh.AllAreas, path)){
+            return path;
+        } else {
+            return null;
+        }
+    }
+
+    private NavMeshPath NewTarget(Vector3 target) {
+        NavMeshPath path = new NavMeshPath();
+        if (NavMesh.CalculatePath(transform.position, target, NavMesh.AllAreas, path)) {
+            return path;
+        } else {
+            return null;
+        }
     }
 
     private void OnTriggerEnter( Collider other ) {
@@ -50,8 +72,10 @@ public class BearAI : MonoBehaviour {
         if (go.CompareTag("tree")) {
             if (go.GetComponent<Tree>()._honey) {
                 go.GetComponent<Tree>()._honey = false;
-                _target = go.transform.position;
                 _canRandomPos = false;
+
+                _target = go.transform.position;
+                _path = NewTarget(_target);                     //errore da riguardare
 
                 StartCoroutine("Wait");
             }
@@ -66,7 +90,7 @@ public class BearAI : MonoBehaviour {
 
     IEnumerator Wait() {
         yield return new WaitForSeconds(_waitFor);
-        NewRandomTarget();
+        _path = NewRandomTarget();
         _canRandomPos = true;
     }
 }

@@ -15,8 +15,6 @@ public class Tree : MonoBehaviour {
             Berry = false;
         }
     }
-
-
     void Update() {
         if (!_honey && Honey) {
             _waitTime = _honeySpawnTime;

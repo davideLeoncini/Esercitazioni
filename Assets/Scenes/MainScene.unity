@@ -140,7 +140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 436196, guid: 275d1aae5c0ba44bba80a5c312a311fb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2.52
       objectReference: {fileID: 0}
     - target: {fileID: 436196, guid: 275d1aae5c0ba44bba80a5c312a311fb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -148,7 +148,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 436196, guid: 275d1aae5c0ba44bba80a5c312a311fb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 436196, guid: 275d1aae5c0ba44bba80a5c312a311fb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -378,11 +378,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 361446188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fedf6fdf599bb90489cc5dfecd1f2cd8, type: 3}
+  m_Script: {fileID: 11500000, guid: 3afccd7efa5abe94587a693367d73ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   navigationArea: {fileID: 272360517}
   visibleRange: 5
+  speed: 5
+  angularSpeed: 500
 --- !u!195 &361446190
 NavMeshAgent:
   m_ObjectHideFlags: 0
